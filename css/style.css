@@ -1,23 +1,23 @@
 
-.ob-highlight {
-  // box-sizing: border-box;
-  // background-clip: border-box;
-}
 .ob-overlay {
   content: '';
   position: absolute;
   background-color: yellow;
   pointer-events: none;
   opacity: .4;
-  border: 1px solid #333;
+  border: 1px solid #222;
   border-radius: 3px;
+  z-index: 99999;
 }
-.ob-highlight::after {
-  content: attr(data-selector);
+.ob-selectors {
+  position: absolute;
+  background-color: #BBB;
   pointer-events: none;
-  position: fixed;
-  top: 100px;
-  left: 0;
-  background-color: yellow;
-  z-index: 9999;
+  border: 1px solid #444;
+  border-radius: 3px;
+  z-index: 99999;
+  padding: 3px 5px;
+
+  font: 14px/16px Helvetica, sans;
+  color: black;
 }

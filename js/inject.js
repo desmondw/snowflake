@@ -27,13 +27,17 @@ function activate() {
 
     console.log(selector)
 
-    $(el).addClass('ob-highlight');
-    $(el).attr('data-selector', selector)
+    // $(el).addClass('ob-highlight');
+    // $(el).attr('data-selector', selector)
     $(el).append('<div class="ob-overlay"></div>')
     $('.ob-overlay')
-      .css('width', $(el).width() + 'px')
-      .css('height', $(el).height() + 'px')
+      .css('width', $(el).outerWidth() + 'px')
+      .css('height', $(el).outerHeight() + 'px')
       .css('top', $(el)[0].offsetTop + 'px')
+      .css('left', $(el)[0].offsetLeft + 'px')
+    $(el).append('<div class="ob-selectors">' + selector + '</div>')
+    $('.ob-selectors')
+      .css('top', $(el)[0].offsetTop - $('.ob-selectors').outerHeight() - 10 + 'px')
       .css('left', $(el)[0].offsetLeft + 'px')
 
     // $(el).append('<div class="ob-overlay"></div>')
@@ -46,6 +50,7 @@ function activate() {
       $(el).removeClass('ob-highlight');
       $(el).attr('data-selector', '')
       $(el).find('.ob-overlay').remove();
+      $(el).find('.ob-selectors').remove();
     })
   })
   $(document).click(function(){
