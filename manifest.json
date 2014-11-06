@@ -1,0 +1,20 @@
+{
+  "name": "CSS Selector",
+  "version": "0.0.1",
+  "manifest_version": 2,
+  "description": "For Josh, I got your back bro.",
+  "homepage_url": "http://desmondw.com",
+  "icons": {
+    "19": "icons/icon19x.png",
+    "38": "icons/icon38x.png"
+  },
+  "default_locale": "en",
+  "content_scripts": [{
+    "matches": ["http://*/*", "https://*/*"],
+    "js": ["js/jquery-2.1.1.min.js",
+           "js/inject.js"],
+    "css": ["css/style.css"],
+    "run_at": "document_end"
+  }],
+  "permissions": ["clipboardWrite"]
+}
