@@ -54,9 +54,9 @@ function activate() {
     })
   })
   $(document).click(function(){
-    // $('.ob-highlight::after').focus();
-    // document.execCommand('SelectAll');
-    // document.execCommand("Copy", false, null);
-    // console.log('Copied!')
+    $('.ob-selectors').focus();
+    document.execCommand('SelectAll');
+    document.execCommand("Copy", false, null);
+    console.log('Copied!')
   })
 }
