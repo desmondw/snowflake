@@ -1,12 +1,15 @@
-// Fix highlighting / border overlay ...Muhammed
-// Fix tooltip
+// Test highlighting / tooltip
 // Copy to clipboard ...need to select on screen?
 // Add more selector specificity
+// Make only work on extension button click
 
 activate();
 
 function activate() {
   var el;
+
+  $('body').append('<div class="ob-overlay"></div>')
+  $('body').append('<div class="ob-selectors"></div>')
 
   $(document).mouseover(function(e){
     el = document.elementFromPoint(e.clientX, e.clientY);
@@ -26,37 +29,29 @@ function activate() {
     }
 
     console.log(selector)
-
-    // $(el).addClass('ob-highlight');
-    // $(el).attr('data-selector', selector)
-    $(el).append('<div class="ob-overlay"></div>')
-    $('.ob-overlay')
-      .css('width', $(el).outerWidth() + 'px')
-      .css('height', $(el).outerHeight() + 'px')
-      .css('top', $(el)[0].offsetTop + 'px')
-      .css('left', $(el)[0].offsetLeft + 'px')
-    $(el).append('<div class="ob-selectors">' + selector + '</div>')
-    $('.ob-selectors')
-      .css('top', $(el)[0].offsetTop - $('.ob-selectors').outerHeight() - 10 + 'px')
-      .css('left', $(el)[0].offsetLeft + 'px')
-
-    // $(el).append('<div class="ob-overlay"></div>')
-    //   .css('width', $(el).width)
-    //   .css('height', $(el).height)
-    //   .css('top', $(el)[0].clientY - $('.ob-overlay').height - 10)
-    //   .css('left', $(el)[0].clientX)
+    
+    var border = 2;
+    var top = $(el).offset().top - $(window).scrollTop();
+    var left = $(el).offset().left - $(window).scrollLeft();
+    $('.ob-overlay').show()
+      .css('width', $(el).outerWidth() - border + 'px')
+      .css('height', $(el).outerHeight() - border + 'px')
+      .css('top', top + 'px')
+      .css('left', left)
+    $('.ob-selectors').show()
+      .css('top', top - $('.ob-selectors').outerHeight() - 10 + 'px')
+      .css('left', left)
+    $('.ob-selectors').html(selector);
 
     $(el).mouseout(function(){
-      $(el).removeClass('ob-highlight');
-      $(el).attr('data-selector', '')
-      $(el).find('.ob-overlay').remove();
-      $(el).find('.ob-selectors').remove();
+      $('.ob-overlay').hide();
+      $('.ob-selectors').hide();
     })
   })
   $(document).click(function(){
-    $('.ob-selectors').focus();
-    document.execCommand('SelectAll');
-    document.execCommand("Copy", false, null);
-    console.log('Copied!')
+    // $('.ob-selectors').focus();
+    // document.execCommand('SelectAll');
+    // document.execCommand("Copy", false, null);
+    // console.log('Copied!')
   })
 }
