@@ -1,20 +1,30 @@
 {
-  "name": "CSS Selector",
-  "version": "0.0.1",
+  "name": "Unique CSS Selector",
+  "version": "1.0.0",
   "manifest_version": 2,
-  "description": "For Josh, I got your back bro.",
-  "homepage_url": "http://desmondw.com",
+  "description": "Generates unique CSS selectors for elements on hover.",
+  "homepage_url": "https://github.com/desmondw/css-selector",
   "icons": {
-    "19": "icons/icon19x.png",
-    "38": "icons/icon38x.png"
+    "16": "icons/icon16.png",
+    "19": "icons/icon19.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "default_locale": "en",
+  "browser_action": {
+    "default_icon": "icons/icon16.png"
+  },
+  "background": {
+    "page": "src/background.html"
+  },
   "content_scripts": [{
-    "matches": ["http://*/*", "https://*/*"],
-    "js": ["js/jquery-2.1.1.min.js",
-           "js/inject.js"],
-    "css": ["css/style.css"],
-    "run_at": "document_end"
+    "matches":  ["http://*/*", "https://*/*"],
+    "js":       ["js/jquery-2.1.1.min.js",
+                 "js/inject.js"],
+    "css":      ["css/style.css"],
+    "run_at":   "document_end"
   }],
-  "permissions": ["clipboardWrite"]
+  "permissions": ["clipboardWrite",
+                  "activeTab",
+                  "background"]
 }

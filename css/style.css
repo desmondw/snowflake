@@ -1,23 +1,29 @@
-
-.ob-overlay {
-  content: '';
+.dw-all {
   position: fixed;
-  background-color: yellow;
-  pointer-events: none;
-  opacity: .4;
-  border: 1px solid #222;
-  border-radius: 3px;
   z-index: 999;
+  border-radius: 3px;
+  pointer-events: none;
 }
-.ob-selectors {
-  position: fixed;
-  background-color: #BBB;
-  pointer-events: none;
-  border: 1px solid #444;
-  border-radius: 3px;
-  z-index: 999;
-  padding: 3px 5px;
 
+#dw-highlight {
+  content: '';
+  opacity: .4;
+  background-color: yellow;
+  border: 2px solid #222;
+}
+
+#dw-selector {
+  background-color: #BBB;
+  border: 1px solid #444;
+  padding: 3px 5px;
+  font: 14px/16px Helvetica, sans;
+  color: black;
+}
+
+#dw-alert {
+  background-color: #FFF;
+  border: 1px solid #444;
+  padding: 3px 5px;
   font: 14px/16px Helvetica, sans;
   color: black;
 }
