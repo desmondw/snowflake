@@ -1,9 +1,9 @@
 {
-  "name": "Unique CSS Selector",
+  "name": "Snowflake",
   "version": "1.0.0",
   "manifest_version": 2,
-  "description": "Generates unique CSS selectors for elements on hover.",
-  "homepage_url": "https://github.com/desmondw/css-selector",
+  "description": "Generate unique CSS selectors.",
+  "homepage_url": "https://github.com/desmondw/snowflake",
   "icons": {
     "16": "icons/icon16.png",
     "19": "icons/icon19.png",

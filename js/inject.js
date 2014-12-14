@@ -1,9 +1,10 @@
 // fix scrolling again
 // Stop event propogation for clicks (example case: google top-right profile pic)
 // Improve UI/UX
-// Replace unique "dw" identifiers with extension name
 // Design icon
-// Move project to own directory and add grunt for minification
+// Add grunt for minification
+// Use Sass for styling
+// Add extension option to copy as jquery or plain
 // Test selector specificity
 
 var HIGH_BORDER = 2; // highlight box
@@ -17,8 +18,8 @@ var selector = "";
 // allow user to identify unique css selectors by hovering over them
 // calling during active execution will cleanup and end the script
 function toggleScript(){
-  if ($('.dw-all').length){ // if script running
-    if ($('.dw-ui').length) // if ui was active, end script
+  if ($('.sf-all').length){ // if script running
+    if ($('.sf-ui').length) // if ui was active, end script
     {
       cleanupScript();
       return;
@@ -26,14 +27,14 @@ function toggleScript(){
     cleanupScript(); // else clear alert and continue
   }
 
-  $('body').append('<div class="dw-all dw-ui" id="dw-highlight"></div>');
-  $('body').append('<div class="dw-all dw-ui" id="dw-selector"></div>');
+  $('body').append('<div class="sf-all sf-ui" id="sf-highlight"></div>');
+  $('body').append('<div class="sf-all sf-ui" id="sf-selector"></div>');
 
-  $(document).bind("mouseover.dw", identify)
-  $(document).bind("mousewheel.dw", function(){
+  $(document).bind("mouseover.sf", identify)
+  $(document).bind("mousewheel.sf", function(){
     setTimeout(function(){ identify(e); }, 0);
   });
-  $(document).bind("click.dw", copySelector);
+  $(document).bind("click.sf", copySelector);
 
   // highlights the given element and displays a unique CSS selector for it
   function identify(e){
@@ -41,12 +42,12 @@ function toggleScript(){
     var el = document.elementFromPoint(e.clientX, e.clientY);
 
     selector = generateSelector(el);
-    $('#dw-selector').html(selector);
+    $('#sf-selector').html(selector);
     drawOverlay(el);
 
     $(el).mouseout(function(){
-      $('#dw-highlight').hide();
-      $('#dw-selector').hide();
+      $('#sf-highlight').hide();
+      $('#sf-selector').hide();
     })
   }
 
@@ -135,7 +136,7 @@ function toggleScript(){
     var left = $(el).offset().left - $(window).scrollLeft();
     var bottom = top + $(el).outerHeight();
 
-    $('#dw-highlight').show()
+    $('#sf-highlight').show()
       .css('width', $(el).outerWidth() - HIGH_BORDER + 'px')
       .css('height', $(el).outerHeight() - HIGH_BORDER + 'px')
       .css('top', top + 'px')
@@ -145,20 +146,20 @@ function toggleScript(){
     var selectorLeftPad = $(window).outerWidth() - left - SEL_MIN_WIDTH - SEL_BORDER;
     selectorLeftPad = selectorLeftPad < 0 ? selectorLeftPad : 0;
 
-    $('#dw-selector').show()
+    $('#sf-selector').show()
       .css('left', left + selectorLeftPad + 'px');
 
     // y pos of selector box
-    var selectorTop = top - $('#dw-selector').outerHeight() - UI_PADDING;
+    var selectorTop = top - $('#sf-selector').outerHeight() - UI_PADDING;
     var selectorBottom = bottom + HIGH_BORDER + UI_PADDING;
 
     var selectorPos = UI_PADDING;
     if (selectorTop > 0)
       selectorPos = selectorTop;
-    else if (selectorBottom + $('#dw-selector').outerHeight() < $(window).outerHeight())
+    else if (selectorBottom + $('#sf-selector').outerHeight() < $(window).outerHeight())
       selectorPos = selectorBottom;
 
-    $('#dw-selector').css('top', selectorPos + 'px')
+    $('#sf-selector').css('top', selectorPos + 'px')
   }
 
   // copy the generated CSS selector to the clipboard
@@ -173,30 +174,30 @@ function toggleScript(){
 
   // display a popup message at the top of the screen that fades away
   function fadeAlert(message, callback){
-    $('body').append('<div class="dw-all" id="dw-alert">' + message + '</div>');
-    $("#dw-alert").css('left', $(window).outerWidth() / 2 - $("#dw-alert").outerWidth() / 2)
+    $('body').append('<div class="sf-all" id="sf-alert">' + message + '</div>');
+    $("#sf-alert").css('left', $(window).outerWidth() / 2 - $("#sf-alert").outerWidth() / 2)
                   .css('top', 0);
     setTimeout(function(){
-      $("#dw-alert").fadeOut(1500, callback);
+      $("#sf-alert").fadeOut(1500, callback);
     }, 1500);
   }
 
   // print an error to the console
   function printError(message){
-    console.log('dw-Error: ' + message);
+    console.log('sf-Error: ' + message);
   }
 
   // tidy up script and provide an optional message to the user
   function cleanupScript(message){
-    $(document).unbind(".dw")
+    $(document).unbind(".sf")
 
     if (message){
-      $('.dw-ui').remove();
+      $('.sf-ui').remove();
       fadeAlert(message, function(){
-        $('.dw-all').remove();
+        $('.sf-all').remove();
       });
     }
     else
-      $('.dw-all').remove();
+      $('.sf-all').remove();
   }
 }

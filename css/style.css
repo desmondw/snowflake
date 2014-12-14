@@ -1,18 +1,18 @@
-.dw-all {
+.sf-all {
   position: fixed;
   z-index: 999;
   border-radius: 3px;
   pointer-events: none;
 }
 
-#dw-highlight {
+#sf-highlight {
   content: '';
   opacity: .4;
   background-color: yellow;
   border: 2px solid #222;
 }
 
-#dw-selector {
+#sf-selector {
   background-color: #BBB;
   border: 1px solid #444;
   padding: 3px 5px;
@@ -20,7 +20,7 @@
   color: black;
 }
 
-#dw-alert {
+#sf-alert {
   background-color: #FFF;
   border: 1px solid #444;
   padding: 3px 5px;
