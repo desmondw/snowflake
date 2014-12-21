@@ -7,10 +7,10 @@
 // Add extension option to copy as jquery or plain
 // Test selector specificity
 
-var HIGH_BORDER = 2; // highlight box
-var SEL_BORDER = 1; // selector box
-var SEL_MIN_WIDTH = 250; // selector box
-var UI_PADDING = 2; // all visual containers
+var HIGH_BORDER    = 2;    // highlight box
+var SEL_BORDER     = 1;    // selector box
+var SEL_MIN_WIDTH  = 250;  // selector box
+var UI_PADDING     = 2;    // all visual containers
 var COPY_AS_JQUERY = true; // copies to clipboard, ready to query
 
 var selector = "";

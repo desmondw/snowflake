@@ -1,0 +1,10 @@
+{
+  "name": "snowflake",
+  "version": "1.0.0",
+  "devDependencies": {
+    "grunt-cli": "latest",
+    "grunt-contrib-compass": "latest",
+    "grunt-contrib-watch": "latest",
+    "grunt-autoprefixer": "latest"
+  }
+}
