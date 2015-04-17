@@ -1,6 +1,6 @@
 chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs.executeScript({
-    code: "toggleScript()"
+    code: "snowflake.toggleScript();"
   });
 });
 
@@ -10,6 +10,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     document.execCommand("Copy");
     $("#clipboard").hide();
 
-    sendResponse({message: "CSS selector copied to clipboard!"});
+    sendResponse({message: "Copied to clipboard!"});
   }
 });

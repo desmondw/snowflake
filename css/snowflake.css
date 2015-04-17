@@ -1,0 +1,33 @@
+/* line 1, snowflake.scss */
+.sf-all {
+  position: fixed;
+  z-index: 999;
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+/* line 8, snowflake.scss */
+#sf-highlight {
+  content: '';
+  opacity: .4;
+  background-color: yellow;
+  border: 2px solid #222;
+}
+
+/* line 15, snowflake.scss */
+#sf-selector {
+  background-color: #BBB;
+  border: 1px solid #444;
+  padding: 3px 5px;
+  font: 14px/16px Helvetica, sans;
+  color: black;
+}
+
+/* line 23, snowflake.scss */
+#sf-alert {
+  background-color: #FFF;
+  border: 1px solid #444;
+  padding: 3px 5px;
+  font: 14px/16px Helvetica, sans;
+  color: black;
+}

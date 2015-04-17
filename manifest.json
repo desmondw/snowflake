@@ -17,14 +17,17 @@
   "background": {
     "page": "src/background.html"
   },
+  "options_page": "src/options.html",
   "content_scripts": [{
     "matches":  ["http://*/*", "https://*/*"],
     "js":       ["js/jquery-2.1.1.min.js",
                  "js/inject.js"],
-    "css":      ["css/style.css"],
+    "css":      ["css/snowflake.css"],
     "run_at":   "document_end"
   }],
   "permissions": ["clipboardWrite",
                   "activeTab",
-                  "background"]
+                  "background",
+                  "storage",
+                  "tabs"]
 }

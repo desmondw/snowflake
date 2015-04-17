@@ -4,7 +4,7 @@
   "devDependencies": {
     "grunt-cli": "latest",
     "grunt-contrib-compass": "latest",
-    "grunt-contrib-watch": "latest",
-    "grunt-autoprefixer": "latest"
+    "grunt-autoprefixer": "latest",
+    "grunt-contrib-watch": "latest"
   }
 }

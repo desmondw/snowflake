@@ -1,3 +1,5 @@
+var tasks = ['compass', 'autoprefixer'];
+
 module.exports = function(grunt) {
   grunt.initConfig({
     compass: {
@@ -20,7 +22,7 @@ module.exports = function(grunt) {
     watch: {
       dev: {
         files: ['*.scss', '*.js'],
-        tasks: ['compass', 'autoprefixer'],
+        tasks: tasks,
         options: {
           livereload: true
         }
@@ -29,8 +31,8 @@ module.exports = function(grunt) {
   });
 
   grunt.loadNpmTasks('grunt-contrib-compass');
-  grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-autoprefixer');
+  grunt.loadNpmTasks('grunt-contrib-watch');
 
-  grunt.registerTask('default', ['compass', 'autoprefixer', 'watch']);
+  grunt.registerTask('default', tasks.concat('watch'));
 };
