@@ -1,4 +1,5 @@
-##Snowflake - Generate Unique CSS Selectors
+Snowflake - Generate Unique CSS Selectors
+---
 
 Snowflake is a simple way to get unique css selectors from elements on a webpage.
 
