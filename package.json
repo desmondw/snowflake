@@ -1,10 +1,20 @@
 {
   "name": "snowflake",
   "version": "1.0.0",
-  "devDependencies": {
-    "grunt-cli": "latest",
-    "grunt-contrib-compass": "latest",
-    "grunt-contrib-watch": "latest",
-    "grunt-autoprefixer": "latest"
-  }
+  "description": "Snowflake is a simple way to get unique css selectors from elements on a webpage.",
+  "dependencies": {},
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/desmondw/snowflake.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/desmondw/snowflake/issues"
+  },
+  "homepage": "https://github.com/desmondw/snowflake"
 }
