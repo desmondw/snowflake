@@ -1,203 +1,211 @@
-// fix scrolling again
-// Stop event propogation for clicks (example case: google top-right profile pic)
-// Improve UI/UX
-// Design icon
-// Add grunt for minification
-// Use Sass for styling
-// Add extension option to copy as jquery or plain
-// Test selector specificity
+const IS_DEV = true // environment
+const STICKY = true // if true, selection stays on browser when it loses focus a la chrome dev tools
 
-var HIGH_BORDER    = 2;    // highlight box
-var SEL_BORDER     = 1;    // selector box
-var SEL_MIN_WIDTH  = 250;  // selector box
-var UI_PADDING     = 2;    // all visual containers
-var COPY_AS_JQUERY = true; // copies to clipboard, ready to query
+const SEL_MIN_WIDTH  = 250 // selector box minimum width
+const UI_PADDING     = 2   // all visual containers
 
-var selector = "";
+var selector = ""
 
-// allow user to identify unique css selectors by hovering over them
-// calling during active execution will cleanup and end the script
-function toggleScript(){
-  if ($('.sf-all').length){ // if script running
-    if ($('.sf-ui').length) // if ui was active, end script
-    {
-      cleanupScript();
-      return;
-    }
-    cleanupScript(); // else clear alert and continue
-  }
+/**
+ * toggleSelection - Starts/ends the script. Occurs when the icon is clicked or hotkey is pressed.
+ */
+function toggleSelection(){
+  var isScriptRunning = $('.sf-ui').length
 
-  $('body').append('<div class="sf-all sf-ui" id="sf-highlight"></div>');
-  $('body').append('<div class="sf-all sf-ui" id="sf-selector"></div>');
+  cleanup()
+  if (!isScriptRunning)
+    initialize()
+}
 
-  $(document).bind("mouseover.sf", identify)
-  $(document).bind("mousewheel.sf", function(){
-    setTimeout(function(){ identify(e); }, 0);
-  });
-  $(document).bind("click.sf", copySelector);
+/**
+ * initialize - Creates DOM elements needed to operate the script
+ */
+function initialize(){
+    $('body').append('<div class="sf-all sf-ui" id="sf-highlight"></div>')
+    $('body').append('<div class="sf-all sf-ui" id="sf-selector"></div>')
+    $('body, a, div, span, img, i, button').addClass('force-cursor')
 
-  // highlights the given element and displays a unique CSS selector for it
-  function identify(e){
-    e.stopPropagation();
-    var el = document.elementFromPoint(e.clientX, e.clientY);
+    $(document).one("mousemove.sf", identify)
+    $(document).bind("mouseover.sf", identify)
 
-    selector = generateSelector(el);
-    $('#sf-selector').html(selector);
-    drawOverlay(el);
+    $(document).bind("click.sf", preventListeners)
+    $(document).bind("mousedown.sf", preventListeners)
+    $(document).bind("mouseup.sf", copySelector)
+}
 
+/**
+ * cleanup - Removes all DOM elements for the script
+ */
+function cleanup(){
+  $(document).unbind(".sf")
+  $('body, a, div, span, img, i, button').removeClass('force-cursor')
+  $('.sf-all').remove()
+}
+
+/**
+ * preventListeners - stops propogation of mouse events
+ * @param  {Event} e
+ */
+function preventListeners(e){
+  e.preventDefault()
+  e.stopImmediatePropagation()
+  e.stopPropagation()
+}
+
+/**
+ * identify - highlights the given element and displays a unique CSS selector for it
+ *
+ * @param  {Event} e
+ */
+function identify(e){
+  preventListeners(e)
+  var el = document.elementFromPoint(e.clientX, e.clientY)
+
+  selector = generateSelector(el)
+  $('#sf-selector').html(selector)
+  drawOverlay(el)
+
+  if (!STICKY){
     $(el).mouseout(function(){
-      $('#sf-highlight').hide();
-      $('#sf-selector').hide();
+      $('#sf-highlight').hide()
+      $('#sf-selector').hide()
     })
   }
+}
 
-  // creates a unique css selector for the given element
-  function generateSelector(el){
-    var selector = "";
-    var tree = $(el).parentsUntil(document);
+/**
+ * drawOverlay - draws all of the UI
+ * @param  {Element} el the most top-level moused over element
+ */
+function drawOverlay(el){
+  var top = $(el).offset().top - $(window).scrollTop()
+  var left = $(el).offset().left - $(window).scrollLeft()
+  var bottom = top + $(el).outerHeight()
 
-    // generate full selector by traversing DOM from bottom-up
-      console.clear();
-    for (var i = -1; i < tree.length; i++){
-      var e = i < 0 ? el : tree[i];
-      
-      var eCSS = querifyElement(e);
-      var query = eCSS.query + (selector.length ? ' > ' : '') + selector;
+  // highlight box
+  $('#sf-highlight').show()
+    .css('width', $(el).outerWidth() + 'px')
+    .css('height', $(el).outerHeight() + 'px')
+    .css('top', top + 'px')
+    .css('left', left + 'px')
 
-      var matches = $(query);
-      console.log("QUERY: " + query);
+  // selector box (x)
+  var selectorLeftPad = Math.min(window.innerWidth - left, 0)
 
-      if (matches.length === 1 && matches[0] === el){
-        console.log('   single match (result)');
-        return query;
-      }
-      else if (matches.length > 1 && i + 1 < tree.length){
-        console.log('   many matches');
+  $('#sf-selector').show().css('left', left + selectorLeftPad + 'px')
+  var selectorWidth = $('#sf-selector').outerWidth()
+  if (selectorWidth + left > window.innerWidth)
+    $('#sf-selector').css('left', window.innerWidth - selectorWidth + 'px')
 
-        var parentQuery = generateSelector(tree[i + 1]);
-        var parentMatches = $(parentQuery).children(eCSS.tag);
-        var nthQuery = eCSS.tag + ':nth-of-type(' + (parentMatches.index(el) + 1) + ')' + (selector.length ? ' > ' : '') + selector;
-        var parentNthQuery = parentQuery + ' > ' + nthQuery;
-        var nthMatches = $(parentNthQuery);
+  // selector box (y)
+  var selectorTop = top - $('#sf-selector').outerHeight() - UI_PADDING
+  var selectorBottom = bottom + UI_PADDING
 
-        console.log("PARENT_QUERY: " + parentQuery);
-        console.log("__ELEMENT__");
-        console.log(e)
-        console.log("__PARENT__");
-        console.log($(parentQuery)[0])
-        console.log("__PARENT_MATCHES__");
-        console.log(parentMatches)
-        console.log("PARENT_NTH_QUERY: " + parentNthQuery);
+  var selectorPos = UI_PADDING
+  if (selectorTop > 0)
+    selectorPos = selectorTop
+  else if (selectorBottom + $('#sf-selector').outerHeight() < $(window).outerHeight())
+    selectorPos = selectorBottom
 
-        if (nthMatches.length === 1 && nthMatches[0] === el){
-          console.log('   single match with nth-of-type (result)');
-          return parentNthQuery;
-        }
-        else {
-          // console.log('   many matches with nth-of-type (continue)');
-          // selector = nthQuery;
-          printError("----------")
-          return 'ERROR';
-        }
-      }
-      else {
-        if (matches.length === 1) printError("Matched incorrect element. (matches.length = " + matches.length + ")")
-        else if (matches.length > 1) printError("Multiple matches, but traversed entire tree (algorithm not being specific enough).")
-        else printError("Could not find match for tag/id/class selector. (matches.length = " + matches.length + ")")
-        return 'ERROR';
-      }
-      console.log("");
-    }
+  $('#sf-selector').css('top', selectorPos + 'px')
+}
 
-    return selector;
-  }
+/**
+ * generateSelector - creates a unique css selector for the given element
+ *
+ * @param  {Element} el The DOM element
+ * @return {String} Unique CSS selector
+ */
+function generateSelector(el){
+  var selector = ""
+  var tree = $(el).parentsUntil(document)
 
-  // returns object with element information in query format
-  function querifyElement(e){
-    if (!e) return null;
+  // generate full selector by traversing DOM from bottom-up
+  for (var i = -1; i < tree.length; i++){
+    var e = i < 0 ? el : tree[i]
 
-    var tag = e.tagName.toLowerCase();
-    var ids = e.id ? '#' + e.id.trim().split(' ').join('#') : "";
-    var classes = e.className ? '.' + e.className.trim().split(' ').join('.') : "";
-    var query = tag + ids + classes;
-
-    return {
+    var eCSS = {
       element: e,
-      tag: tag,
-      ids: ids,
-      classes: classes,
-      query: query
+      tag: e.tagName.toLowerCase(),
+      ids: e.id ? '#' + e.id.trim().split(' ').join('#') : "",
+      classes: e.className ? '.' + e.className.trim().split(' ').join('.') : ""
+    }
+    eCSS.query = eCSS.tag + eCSS.ids + eCSS.classes
+    var query = eCSS.query + (selector.length ? ' > ' : '') + selector
+    var matches = $(query)
+    // l(`QUERY: ${query}`)
+
+    if (matches.length === 1 && matches[0] === el){ // single match (result)
+      return query
+    } else if (matches.length > 1 && i + 1 < tree.length){ // many matches
+      var parentQuery = generateSelector(tree[i + 1])
+      var parentMatches = $(parentQuery).children(eCSS.tag)
+      var nthQuery = eCSS.tag + ':nth-of-type(' + (parentMatches.index(el) + 1) + ')' + (selector.length ? ' > ' : '') + selector
+      var parentNthQuery = parentQuery + ' > ' + nthQuery
+      var nthMatches = $(parentNthQuery)
+
+      if (nthMatches.length === 1 && nthMatches[0] === el){ // single match with nth-of-type (result)
+        return parentNthQuery
+      } else {
+        l('Unexpected error')
+        return null
+      }
+    } else {
+      if (matches.length === 1)
+        l("Matched incorrect element. (matches.length = " + matches.length + ")")
+      else if (matches.length > 1)
+        l("Multiple matches, but traversed entire tree (algorithm not being specific enough).")
+      else
+        l("Could not find match for tag/id/class selector. (matches.length = " + matches.length + ")")
+      return null
     }
   }
 
-  // draw the highlight box and selector tooltip to the screen
-  function drawOverlay(el){
-    var top = $(el).offset().top - $(window).scrollTop();
-    var left = $(el).offset().left - $(window).scrollLeft();
-    var bottom = top + $(el).outerHeight();
+  return selector
+}
 
-    $('#sf-highlight').show()
-      .css('width', $(el).outerWidth() - HIGH_BORDER + 'px')
-      .css('height', $(el).outerHeight() - HIGH_BORDER + 'px')
-      .css('top', top + 'px')
-      .css('left', left + 'px');
+/**
+ * copySelector - Copies the generated CSS selector to the clipboard
+ *
+ * @param {Event} e
+ */
+function copySelector(e){
+  preventListeners(e)
+  var copyText = IS_DEV ? `$('${selector}')` : selector
+  l(selector)
+  l($(selector)[0], true)
+  chrome.runtime.sendMessage({type: "copy", text: copyText}, function(response) {
+    cleanup()
+    fadeAlert(response.message)
+  })
+}
 
-    // x pos of selector box
-    var selectorLeftPad = $(window).outerWidth() - left - SEL_MIN_WIDTH - SEL_BORDER;
-    selectorLeftPad = selectorLeftPad < 0 ? selectorLeftPad : 0;
+/**
+ * fadeAlert - Displays a popup message at the top of the screen that fades away
+ *
+ * @param  {String} message
+ */
+function fadeAlert(message){
+  $('body').append('<div class="sf-all" id="sf-alert">' + message + '</div>')
+  $("#sf-alert").css('left', $(window).outerWidth() / 2 - $("#sf-alert").outerWidth() / 2)
+                .css('top', 0)
+  window.setTimeout(function(){
+    $("#sf-alert").fadeOut(1500, function(){
+      $("#sf-alert").remove()
+    })
+  }, 1000)
+}
 
-    $('#sf-selector').show()
-      .css('left', left + selectorLeftPad + 'px');
-
-    // y pos of selector box
-    var selectorTop = top - $('#sf-selector').outerHeight() - UI_PADDING;
-    var selectorBottom = bottom + HIGH_BORDER + UI_PADDING;
-
-    var selectorPos = UI_PADDING;
-    if (selectorTop > 0)
-      selectorPos = selectorTop;
-    else if (selectorBottom + $('#sf-selector').outerHeight() < $(window).outerHeight())
-      selectorPos = selectorBottom;
-
-    $('#sf-selector').css('top', selectorPos + 'px')
-  }
-
-  // copy the generated CSS selector to the clipboard
-  function copySelector(e){
-    e.preventDefault();
-    e.stopPropagation();
-    var copyText = COPY_AS_JQUERY ? "$('" + selector + "')" : selector;
-    chrome.runtime.sendMessage({type: "copy", text: copyText}, function(response) {
-      cleanupScript(response.message);
-    });
-  }
-
-  // display a popup message at the top of the screen that fades away
-  function fadeAlert(message, callback){
-    $('body').append('<div class="sf-all" id="sf-alert">' + message + '</div>');
-    $("#sf-alert").css('left', $(window).outerWidth() / 2 - $("#sf-alert").outerWidth() / 2)
-                  .css('top', 0);
-    setTimeout(function(){
-      $("#sf-alert").fadeOut(1500, callback);
-    }, 1500);
-  }
-
-  // print an error to the console
-  function printError(message){
-    console.log('sf-Error: ' + message);
-  }
-
-  // tidy up script and provide an optional message to the user
-  function cleanupScript(message){
-    $(document).unbind(".sf")
-
-    if (message){
-      $('.sf-ui').remove();
-      fadeAlert(message, function(){
-        $('.sf-all').remove();
-      });
-    }
+/**
+ * l - Logging with prefixing that's limited to development
+ *
+ * @param  {String} message
+ * @param  {bool} skipPrefix useful for printing objects
+ */
+function l(message, skipPrefix){
+  if (IS_DEV)
+    if (skipPrefix)
+      console.log(message)
     else
-      $('.sf-all').remove();
-  }
+      console.log(`Snowflake: ${message}\n`)
 }

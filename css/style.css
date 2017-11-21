@@ -1,29 +1,33 @@
+@font-face {
+ font-family: 'Ubuntu';
+ font-weight: 500;
+ src: url('chrome-extension://__MSG_@@extension_id__/fonts/Ubuntu/Ubuntu-Regular.ttf');
+}
+
 .sf-all {
   position: fixed;
-  z-index: 999;
+  z-index: 999999999;
   border-radius: 3px;
   pointer-events: none;
 }
 
 #sf-highlight {
   content: '';
-  opacity: .4;
-  background-color: yellow;
-  border: 2px solid #222;
+  background-color: #42fff640;
+  border-radius: 0;
 }
 
-#sf-selector {
-  background-color: #BBB;
-  border: 1px solid #444;
-  padding: 3px 5px;
-  font: 14px/16px Helvetica, sans;
-  color: black;
+#sf-selector, #sf-alert {
+  background-color: #0fc7e4;
+  padding: 5px 8px;
+
+  font-size: 14px;
+  font-family: 'Ubuntu';
+  font-weight: bold;
+  letter-spacing: 0.5px;
+  color: white;
 }
 
-#sf-alert {
-  background-color: #FFF;
-  border: 1px solid #444;
-  padding: 3px 5px;
-  font: 14px/16px Helvetica, sans;
-  color: black;
+.force-cursor {
+  cursor: default !important
 }

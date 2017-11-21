@@ -1,6 +1,6 @@
 {
   "name": "Snowflake",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "manifest_version": 2,
   "description": "Generate unique CSS selectors.",
   "homepage_url": "https://github.com/desmondw/snowflake",
@@ -14,9 +14,6 @@
   "browser_action": {
     "default_icon": "icons/icon16.png"
   },
-  "background": {
-    "page": "src/background.html"
-  },
   "content_scripts": [{
     "matches":  ["http://*/*", "https://*/*"],
     "js":       ["js/jquery-2.1.1.min.js",
@@ -24,7 +21,19 @@
     "css":      ["css/style.css"],
     "run_at":   "document_end"
   }],
+  "background": {
+    "page": "src/background.html"
+  },
   "permissions": ["clipboardWrite",
                   "activeTab",
-                  "background"]
+                  "background"],
+  "web_accessible_resources": ["fonts/Ubuntu/Ubuntu-Regular.ttf"],
+  "commands": {
+    "toggle-selection": {
+      "suggested_key": {
+        "default": "Alt+S"
+      },
+      "description": "Toggle selection"
+    }
+  }
 }
