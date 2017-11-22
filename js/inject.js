@@ -1,8 +1,10 @@
-const IS_DEV = true // environment
+const IS_DEV = false // environment
 const STICKY = true // if true, selection stays on browser when it loses focus a la chrome dev tools
 
 const SEL_MIN_WIDTH  = 250 // selector box minimum width
 const UI_PADDING     = 2   // all visual containers
+
+const FILTER_CLASSES = ["brush:"] // parse out js library wizardry
 
 var selector = ""
 
@@ -130,15 +132,15 @@ function generateSelector(el){
     var eCSS = {
       element: e,
       tag: e.tagName.toLowerCase(),
-      ids: e.id ? '#' + e.id.trim().split(' ').join('#') : "",
-      classes: e.className ? '.' + e.className.trim().split(' ').join('.') : ""
+      ids: parseIds(e),
+      classes: parseClasses(e)
     }
     eCSS.query = eCSS.tag + eCSS.ids + eCSS.classes
     var query = eCSS.query + (selector.length ? ' > ' : '') + selector
     var matches = $(query)
-    // l(`QUERY: ${query}`)
+    l(`QUERY: ${query}`)
 
-    if (matches.length === 1 && matches[0] === el){ // single match (result)
+    if (matches.length == 1 && matches[0] == el){ // single match (result)
       return query
     } else if (matches.length > 1 && i + 1 < tree.length){ // many matches
       var parentQuery = generateSelector(tree[i + 1])
@@ -147,14 +149,16 @@ function generateSelector(el){
       var parentNthQuery = parentQuery + ' > ' + nthQuery
       var nthMatches = $(parentNthQuery)
 
-      if (nthMatches.length === 1 && nthMatches[0] === el){ // single match with nth-of-type (result)
+      if (parentMatches.length == 1 && parentMatches[0] == el){ // single match (result)
+        return parentQuery + ' > ' + eCSS.tag + (selector.length ? ' > ' : '') + selector
+      } else if (nthMatches.length == 1 && nthMatches[0] == el){ // single match with nth-of-type (result)
         return parentNthQuery
       } else {
         l('Unexpected error')
         return null
       }
     } else {
-      if (matches.length === 1)
+      if (matches.length == 1)
         l("Matched incorrect element. (matches.length = " + matches.length + ")")
       else if (matches.length > 1)
         l("Multiple matches, but traversed entire tree (algorithm not being specific enough).")
@@ -167,6 +171,16 @@ function generateSelector(el){
   return selector
 }
 
+function parseIds(e){
+  if (e.id.length == 0) return ""
+  return '#' + e.id.trim().split(/\s+/).join('#')
+}
+
+function parseClasses(e){
+  if (e.className.length == 0) return ""
+  return '.' + e.className.trim().split(/\s+/).filter(e => !FILTER_CLASSES.includes(e)).join('.')
+}
+
 /**
  * copySelector - Copies the generated CSS selector to the clipboard
  *
@@ -175,7 +189,7 @@ function generateSelector(el){
 function copySelector(e){
   preventListeners(e)
   var copyText = IS_DEV ? `$('${selector}')` : selector
-  l(selector)
+  l(`SELECTOR: ${selector}`)
   l($(selector)[0], true)
   chrome.runtime.sendMessage({type: "copy", text: copyText}, function(response) {
     cleanup()

@@ -11,14 +11,6 @@
   pointer-events: none;
 }
 
-.sf-all:active {
-  /*pointer-events: auto;*/
-}
-
-/*.sf-all:hover {
-  pointer-events: none;
-}*/
-
 #sf-highlight {
   content: '';
   background-color: #42fff640;
