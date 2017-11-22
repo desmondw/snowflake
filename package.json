@@ -1,7 +1,7 @@
 {
   "name": "snowflake",
-  "version": "1.0.0",
-  "description": "Snowflake is a simple way to get unique css selectors from elements on a webpage.",
+  "version": "1.1.0",
+  "description": "Chrome extension for generating unique CSS selectors",
   "dependencies": {},
   "devDependencies": {},
   "scripts": {
