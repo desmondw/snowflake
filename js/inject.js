@@ -23,14 +23,14 @@ function toggleSelection(){
 function initialize(){
     $('body').append('<div class="sf-all sf-ui" id="sf-highlight"></div>')
     $('body').append('<div class="sf-all sf-ui" id="sf-selector"></div>')
-    $('body, a, div, span, img, i, button').addClass('force-cursor')
+    $('body').addClass('sf-cursor')
 
     $(document).one("mousemove.sf", identify)
     $(document).bind("mouseover.sf", identify)
 
     $(document).bind("click.sf", preventListeners)
-    $(document).bind("mousedown.sf", preventListeners)
-    $(document).bind("mouseup.sf", copySelector)
+    $(document).bind("mouseup.sf", preventListeners)
+    $(document).bind("mousedown.sf", copySelector)
 }
 
 /**
@@ -38,7 +38,10 @@ function initialize(){
  */
 function cleanup(){
   $(document).unbind(".sf")
-  $('body, a, div, span, img, i, button').removeClass('force-cursor')
+  $(document).bind("mouseup.sf", (e)=>{ // delayed removal lets us avoid clicks bubbling up
+    $('body').removeClass('sf-cursor')
+    $(document).unbind(".sf")
+  })
   $('.sf-all').remove()
 }
 
@@ -186,12 +189,13 @@ function copySelector(e){
  * @param  {String} message
  */
 function fadeAlert(message){
-  $('body').append('<div class="sf-all" id="sf-alert">' + message + '</div>')
+  var now = Date.now()
+  $('body').append(`<div class="sf-all" id="sf-alert" class="${now}">${message}</div>`)
   $("#sf-alert").css('left', $(window).outerWidth() / 2 - $("#sf-alert").outerWidth() / 2)
                 .css('top', 0)
   window.setTimeout(function(){
     $("#sf-alert").fadeOut(1500, function(){
-      $("#sf-alert").remove()
+      $(`#sf-alert.${now}`).remove()
     })
   }, 1000)
 }
